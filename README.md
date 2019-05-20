@@ -1,8 +1,8 @@
 # GreenOrbit API Application using the Serverless Framework
 
-To get an insight into the overall concept, read Gavin's blog post here: https://medium.com/faun/securing-api-gateway-with-lambda-authorizers-62845032bc7d
-GreenOrbit/iD SSO concept: http://help.intranetdashboard.com/systemadmin/Utilities/single_sign_on/SingleSignOn.html
-CI/CD Pipeline Concept: https://medium.com/faun/how-to-build-a-serverless-ci-cd-pipeline-on-aws-907be91c2e48
+To get an insight into the overall concept, read Gavin's blog post here: https://medium.com/faun/securing-api-gateway-with-lambda-authorizers-62845032bc7d <br />
+GreenOrbit/iD SSO concept: http://help.intranetdashboard.com/systemadmin/Utilities/single_sign_on/SingleSignOn.html <br />
+CI/CD Pipeline Concept: https://medium.com/faun/how-to-build-a-serverless-ci-cd-pipeline-on-aws-907be91c2e48 <br />
 
 This is the completed boilerplate including the Lambda Authorizer function to take the SSO token from iD/GO, then use it to generate a JWT which then should be stored in the user’s browser and then used for subsequent API requests.  Here is an overview of what is included:
 
