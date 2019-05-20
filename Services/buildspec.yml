@@ -1,0 +1,24 @@
+version: 0.2 
+#env: 
+  #variables: 
+    # key: value 
+  #parameter-store: 
+    # key: value 
+phases: 
+  install: 
+    runtime-versions: 
+      dotnet: 2.2 
+    commands: 
+      - npm i -g serverless 
+  build: 
+    commands: 
+      - cd core # Update with the folder name of serverless
+      - dotnet restore
+      - dotnet lambda package --configuration release --framework netcoreapp2.1 --output-package bin/release/netcoreapp2.1/deploy-package.zip
+  post_build: 
+    commands: 
+      - sls deploy -v -s $STAGE -r $REGION
+# artifacts: 
+#   files: 
+#     - '**/*' 
+#   base-directory: outputs 
