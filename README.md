@@ -1,6 +1,7 @@
 # GreenOrbit API Application using the Serverless Framework
 
 To get an insight into the overall concept, read Gavin's blog post here: https://github.com/effectivedigital/go-serverless-apiapp
+GreenOrbit/iD SSO concept: http://help.intranetdashboard.com/systemadmin/Utilities/single_sign_on/SingleSignOn.html
 
 This is the completed boilerplate including the Lambda Authorizer function to take the SSO token from iD/GO, then use it to generate a JWT which then should be stored in the user’s browser and then used for subsequent API requests.  Here is an overview of what is included:
 

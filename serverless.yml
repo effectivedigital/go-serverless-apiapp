@@ -1,0 +1,80 @@
+# Set this to the name of your own API/Project
+service: gossoapi
+
+provider:
+  name: aws
+  runtime: dotnetcore2.1
+  region: ap-southeast-2 # Change this to the correct region based on the client's location
+
+  logRetentionInDays: 90
+
+  environment:
+    ApiGatewayArn:
+      Fn::Join:
+        - ""
+        - - "arn:aws:execute-api"
+          - ":"
+          - Ref: AWS::Region
+          - ":"
+          - Ref: AWS::AccountId
+          - ":"
+          - Ref: ApiGatewayRestApi
+          - "/*/*/*"
+    # Used for generating the JWT for the user into API Gateway
+    # Update to your own, you can use a tool such as the below, set HMAC-SHA256 as the algorithm
+    # https://codebeautify.org/hmac-generator  
+    HmacSignature: "d70a7c22a085058edf657b4f1b6d4682a423ac27cd4a71fddc908efef8df59a7"
+    HmacExpiry: 10080 # Minutes, 10080 is 7 days
+    # Used for decrypting the SSO token from GO, update these to match the web.config of the lcient
+    DecryptionKey: "xxxxxxxxxxxxxxxxxx"
+    DecryptionVector: "xxxxxxxxx"
+    SSOKeyLifetime: 1 # Minutes, keep this short to reduce risk of old tokens being used
+
+  # you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "ssm:PutParameter"
+        - "ssm:DescribeParameters"
+        - "ssm:GetParameter"
+      Resource: "*"
+
+# or you can add iam managed policies by their ARN
+#  iamManagedPolicies:
+#    -   - 'some:aws:arn:xxx:*:*'
+
+# custom:
+
+# you can add packaging information here
+package:
+  artifact: bin/release/netcoreapp2.1/deploy-package.zip
+#  exclude:
+#    - exclude-me.js
+#    - exclude-me-dir/**
+
+functions:
+  authorizerCheckToken:
+    handler: CsharpHandlers::Authorizer.CheckToken::FunctionHandler
+
+  authorizerAuthenticate:
+    handler: CsharpHandlers::Authorizer.Authenticate::FunctionHandler
+    events:
+      - http:
+          path: ${self:service}/authenticate
+          method: get
+          integration: lambda
+          cors: true
+
+  hello:
+    handler: CsharpHandlers::Namespace.Handler::FunctionHandler
+    events:
+      - http:
+          path: ${self:service}/hello
+          method: get
+          integration: lambda
+          cors: true
+          authorizer: authorizerCheckToken
+
+resources:
+  - ${file(website.yml)} 
+  - ${file(ssm.yml)} 
